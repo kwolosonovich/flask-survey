@@ -1,7 +1,6 @@
 class Question:
     """Question on a questionnaire."""
 
-    idCounter = -1
     def __init__(self, question, choices=None, allow_text=False):
         """Create question (assume Yes/No for choices."""
 
@@ -10,8 +9,6 @@ class Question:
         self.question = question
         self.choices = choices
         self.allow_text = allow_text
-        Question.idCounter += 1
-
 
 class Survey:
     """Questionnaire."""
