@@ -9,5 +9,5 @@ responses = []
 @app.route("/")
 def homepage():
     '''homepage with survey name, questions and start btn'''
-    text = satisfaction_survey.text
-    return render_template("home.html", text=text)
+    # text = satisfaction_survey.text
+    return render_template("homepage.html")
