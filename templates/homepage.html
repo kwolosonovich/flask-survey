@@ -3,10 +3,10 @@
 
 {% block content %}
 
-    <h1>{{ title }}</h1>
-    <p class="{{ instructions }}">{{ instructions }}</p>
-
-    <form action="/questions/0" method="POST">
-        <button type="submit" class="btn btn-dark">Start</button>
-    </form>
+    <h2>{{ title }}</h2>
+        <hr class="dots">
+        <p class="{{ instructions }}">{{ instructions }}</p>
+            <form action="/questions/0" method="POST">
+                <button type="submit" class="submit_button btn btn-outline-light">Start</button>
+            </form>
 {% endblock %}
