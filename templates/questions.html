@@ -2,9 +2,14 @@
 {% block title %}Surveys{% endblock %}
 
 {% block content %}
-    <form action="/questions" method="POST">
-        <h1>{{ title }}</h1>
-        <p class="{{ instructions }}">{{ instructions }}</p>
-        <button href="/questions/0>" type="button" class="btn btn-dark">Next</button>
+    <form id="survey_question" action="/responses" method="POST">
+
+    <h1>{{ title }}</h1>
+
+        <p class="{{ question }}">{{ question }}</p>
+            {% for choice in choices %}
+                <p><input value="{{ choice }}" id="{{ question }}" name="option" type="radio">{{ choice }}</p>
+            {% endfor %}
+        <button type="submit" class="btn btn-dark">Next</button>
     </form>
 {% endblock %}

@@ -20,6 +20,9 @@ class Survey:
         self.instructions = instructions
         self.questions = questions
 
+# you could also assign instances of the class to variables, like this:
+# question = Question("Have you shopped here before?")
+# and then pass them in to Survey below
 
 satisfaction_survey = Survey(
     "Customer Satisfaction Survey",
