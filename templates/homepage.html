@@ -2,7 +2,13 @@
 {% block title %}Surveys{% endblock %}
 
 {% block content %}
+
     <h1>{{ title }}</h1>
     <p class="{{ instructions }}">{{ instructions }}</p>
-    <button href="/questions/0" type="button" class="btn btn-dark">Start</button>
+
+    <form action="/questions/0" method="POST">
+{#        <h1>{{ title }}</h1>#}
+{#        <p class="{{ instructions }}">{{ instructions }}</p>#}
+        <button type="button" class="btn btn-dark">Start</button>
+    </form>
 {% endblock %}

@@ -10,6 +10,7 @@ bootstrap = Bootstrap(app)
 responses = []
 question_id = len(responses)
 
+debug = DebugToolbarExtension(app)
 
 @app.route("/")
 def homepage():
@@ -18,8 +19,8 @@ def homepage():
     title = satisfaction_survey.title
     return render_template("homepage.html", instructions=instructions, title=title)
 
-@app.route("/questions/<int: question_id>")
-def questions():
+@app.route("/questions/<int:question_id>", methods=["GET", "POST"])
+def questions(question_id):
     '''renders the first survey question'''
     question = satisfaction_survey.questions[question_id]
 

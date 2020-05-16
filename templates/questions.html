@@ -2,7 +2,9 @@
 {% block title %}Surveys{% endblock %}
 
 {% block content %}
-    <h1>{{ title }}</h1>
-    <p class="{{ instructions }}">{{ instructions }}</p>
-    <button href="/questions/<int: (idCounter + 1)>" type="button" class="btn btn-dark">Next</button>
+    <form action="/questions" method="POST">
+        <h1>{{ title }}</h1>
+        <p class="{{ instructions }}">{{ instructions }}</p>
+        <button href="/questions/0>" type="button" class="btn btn-dark">Next</button>
+    </form>
 {% endblock %}
