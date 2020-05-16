@@ -11,7 +11,6 @@ debug = DebugToolbarExtension(app)
 
 
 responses = []
-question_id = len(responses)
 
 @app.route("/")
 def homepage():
@@ -23,17 +22,20 @@ def homepage():
 @app.route("/questions/<int:question_id>", methods=["GET", "POST"])
 def questions(question_id):
     '''renders the first survey question'''
-    question = satisfaction_survey.questions[question_id].question
-    choices = satisfaction_survey.questions[question_id].choices
-    print(request)
-    return render_template("questions.html", question=question, choices=choices)
+
+    if question_id > len(responses):
+        return redirect(f"/questions/{len(responses)}")
+    else:
+        question = satisfaction_survey.questions[question_id].question
+        choices = satisfaction_survey.questions[question_id].choices
+
+        return render_template("questions.html", question=question, choices=choices)
 
 @app.route("/responses", methods=["POST"])
 def collect_responses():
     answer = request.form["option"]
     responses.append(answer)
     survey_length = len(satisfaction_survey.questions)
-    print(survey_length)
     if survey_length != len(responses):
         return redirect(f"/questions/{len(responses)}")
     else:
