@@ -9,12 +9,12 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 bootstrap = Bootstrap(app)
 debug = DebugToolbarExtension(app)
 
-
-responses = []
+SESSION_KEY = "responses"
 
 @app.route("/")
 def homepage():
     '''homepage with survey name, questions and start btn'''
+    session[SESSION_KEY] = []
     instructions = satisfaction_survey.instructions
     title = satisfaction_survey.title
     return render_template("homepage.html", instructions=instructions, title=title)
@@ -23,18 +23,26 @@ def homepage():
 def questions(question_id):
     '''renders the first survey question'''
 
+    responses = session[SESSION_KEY]
+
     if question_id > len(responses):
+        flash(f"Invalid question id: {question_id}")
         return redirect(f"/questions/{len(responses)}")
+    elif len(responses) == len(satisfaction_survey.questions):
+        flash(f"Invalid question id: {question_id}")
+        return redirect("/survey_end")
     else:
         question = satisfaction_survey.questions[question_id].question
         choices = satisfaction_survey.questions[question_id].choices
-
         return render_template("questions.html", question=question, choices=choices)
 
 @app.route("/responses", methods=["POST"])
 def collect_responses():
+    responses = session[SESSION_KEY]
     answer = request.form["option"]
     responses.append(answer)
+    session[SESSION_KEY] = responses
+
     survey_length = len(satisfaction_survey.questions)
     if survey_length != len(responses):
         return redirect(f"/questions/{len(responses)}")
