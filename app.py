@@ -32,4 +32,14 @@ def questions(question_id):
 def collect_responses():
     answer = request.form["option"]
     responses.append(answer)
-    return redirect(f"/questions/{len(responses)}")
+    survey_length = len(satisfaction_survey.questions)
+    print(survey_length)
+    if survey_length != len(responses):
+        return redirect(f"/questions/{len(responses)}")
+    else:
+        return redirect("/survey_end")
+
+@app.route("/survey_end")
+def survey_end():
+    '''notify user that survey has been completed'''
+    return render_template("survey_end.html")
