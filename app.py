@@ -32,7 +32,6 @@ def questions(question_id):
             flash(f"Invalid question id: {question_id}")
             return redirect(f"/questions/{len(responses)}")
         elif len(responses) == len(satisfaction_survey.questions):
-            flash(f"Invalid question id: {question_id}")
             return redirect("/survey_end")
         else:
             question = satisfaction_survey.questions[question_id].question
