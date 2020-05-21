@@ -24,6 +24,7 @@ class TestFlaskSurvey(unittest.TestCase):
             response = client.post('/')
             self.assertTrue(response.status_code != 200)
 
+
 # test question route
     def test_invalid_method_on_questions(self):
         '''Tests invalid requests method'''
@@ -33,17 +34,19 @@ class TestFlaskSurvey(unittest.TestCase):
 
     def test_question_id_greater_than_number_of_responses(self):
         '''Test impossible guestion_id param'''
+        answers = []
         with self.client.session_transaction() as session:
-            session[self.session_key] = []
+            session[self.session_key] = answers
 
-        answers = session[self.session_key]
         with self.client as client:
             number_of_answers = len(answers)
-            response = client.post(f"/questions/{number_of_answers + 1}")
+            response = client.get(f"/questions/{number_of_answers + 1}")
             # should return re-direct status code
             self.assertTrue(response.status_code == 302)
+            self.assertIn(f'/questions/{number_of_answers}', response.headers["Location"])
 
     def test_if_all_questions_answered(self):
+        '''Test if number of questions equals number of answers to prevent question skips'''
         with self.client.session_transaction() as session:
             session[self.session_key] = [True] * len(satisfaction_survey.questions)
 
@@ -52,46 +55,66 @@ class TestFlaskSurvey(unittest.TestCase):
             number_of_answers = len(answers)
             response = client.post(f"/questions/{number_of_answers}")
             self.assertTrue(response.status_code == 302)
-#
-#     def test_impossible_satisfaction_survey_len(self):
-#         '''Test impossible satisfaction survey length'''
-#         assert False
-#
-#     def test_invalid_redirect_function(self):
-#         '''Test invalid redirect'''
-#         assert False
-#
-# # test responses route
-#     def test_get_method_on_responses(self):
-#         '''Test invalid method'''
-#         with self.client as client:
-#             response = client.get('/responses')
-#             self.assertFalse(response.status_code == 200)
-#
-#
-#     def test_impossible_responses(self):
-#         '''Test impossible responses from session[SESSION_KEY]'''
-#         assert False
-#
-#     def test_impossible_answer(self):
-#         '''Test impossible answer from option'''
-#         assert False
-#
-#     def test_impossible_survey_length(self):
-#         '''Test impossible survey_length from satisfaction_survey.questions'''
-#         assert False
-#
-# # test survey_end
-#     def test_invalid_method_on_survey_end(self):
-#         '''Test invalid method'''
-#         with self.client as client:
-#             response = client.get('/survey_end')
-#             self.assertFalse(response.status_code != 200)
-#
-#     def test_invalid_render_template_response(self):
-#         '''Test invalid response'''
-#         assert False
-#
+
+
+# test responses
+    def test_invalid_method_on_responses(self):
+        '''Test invalid method'''
+        with self.client as client:
+            response = client.get('/responses')
+            self.assertFalse(response.status_code == 200)
+
+    def test_invalid_answer(self):
+        '''Test impossible answer from option'''
+        with self.client.session_transaction() as session:
+            session[self.session_key] = []
+
+        answer = {}
+        with self.client as client:
+            response = client.post("/responses", data=answer)
+            self.assertTrue(response.status_code == 302)
+
+    def test_prompt_next_question(self):
+        '''Test if next question is rendered if not last question'''
+        responses = [True]
+        with self.client.session_transaction() as session:
+            # single response should redirect to question 2
+            session[self.session_key] = responses
+        answer = {'option': True}
+        with self.client as client:
+            response = client.post('/responses', data=answer)
+            self.assertTrue(response.status_code == 302)
+            self.assertIn(f"/questions/{len(responses) +1}", response.headers["Location"])
+            # self.assertIn(f"/questions/{len(responses) +1}", response.data.decode("utf-8"))
+
+    def test_promt_servey_end(self):
+        '''Test if survey end is rendered after the last question is completed'''
+        responses = [True, True, True]
+        with self.client.session_transaction() as session:
+            # response should redirect to survey end
+            session[self.session_key] = responses
+        answer = {'option': True}
+        with self.client as client:
+            response = client.post('/responses', data=answer)
+            self.assertTrue(response.status_code == 302)
+            self.assertIn("/survey_end", response.headers['location'])
+
+
+# test survey_end
+    def test_valid_method_on_survey_end(self):
+        '''Test Valid method'''
+        with self.client as client:
+            response = client.get('/survey_end')
+            self.assertTrue(response.status_code == 200)
+
+    def test_invalid_method_on_survey_end(self):
+        '''Test invalid method'''
+        with self.client as client:
+            response = client.get('/survey_end')
+            self.assertFalse(response.status_code != 200)
+
+
+# test summary
     def test_invalid_method_on_summary(self):
         '''Test invalid method'''
         with self.client as client:

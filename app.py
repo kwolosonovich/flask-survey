@@ -56,7 +56,7 @@ def collect_responses():
         session[SESSION_KEY] = responses
         survey_length = len(satisfaction_survey.questions)
 
-        if survey_length != len(responses):
+        if len(responses) != survey_length:
             return redirect(f"/questions/{len(responses)}")
         else:
             return redirect("/survey_end")
