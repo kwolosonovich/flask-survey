@@ -13,14 +13,13 @@ debug = DebugToolbarExtension(app)
 # allows new instances of survey results
 SESSION_KEY = "responses"
 
-@app.route("/", methods=["POST"])
+@app.route("/")
 def homepage():
     '''homepage with survey name, questions and start btn'''
-    if request.method == "POST":
-        session[SESSION_KEY] = []
-        instructions = satisfaction_survey.instructions
-        title = satisfaction_survey.title
-        return render_template("homepage.html", instructions=instructions, title=title)
+    session[SESSION_KEY] = []
+    instructions = satisfaction_survey.instructions
+    title = satisfaction_survey.title
+    return render_template("homepage.html", instructions=instructions, title=title)
 
 @app.route("/questions/<int:question_id>", methods=["GET", "POST"])
 def questions(question_id):
