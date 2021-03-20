@@ -7,7 +7,7 @@ Flask-Bootstrap==3.3.7.1
 Flask-DebugToolbar==0.10.1
 Flask-FontAwesome==0.1.4
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 pycodestyle==2.5.0
 visitor==0.1.3
